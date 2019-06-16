@@ -2,6 +2,7 @@ package com.muwire.core.connection
 
 import java.io.InputStream
 import java.io.OutputStream
+import java.nio.charset.StandardCharsets
 
 import com.muwire.core.EventBus
 import com.muwire.core.MuWireSettings
@@ -66,7 +67,7 @@ class PeerConnection extends Connection {
 	protected void write(Object message) {
 		byte[] payload
 		if (message instanceof Map) {
-			payload = JsonOutput.toJson(message).bytes
+			payload = JsonOutput.toJson(message).getBytes(StandardCharsets.UTF_8)
 			DataUtil.packHeader(payload.length, writeHeader)
 			log.fine "$name writing message type ${message.type} length $payload.length"
 			writeHeader[0] &= (byte)0x7F
