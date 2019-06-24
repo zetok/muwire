@@ -1,5 +1,6 @@
 package com.muwire.core.mesh
 
+import java.util.logging.Level
 import java.util.stream.Collectors
 
 import com.muwire.core.Constants
@@ -12,8 +13,10 @@ import com.muwire.core.util.DataUtil
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import groovy.util.logging.Log
 import net.i2p.data.Base64
 
+@Log
 class MeshManager {
     
     private static final int EXPIRATION = 60 * 60 * 1000
@@ -36,6 +39,7 @@ class MeshManager {
         synchronized(meshes) {
             if (meshes.containsKey(infoHash))
                 return meshes.get(infoHash)
+            log.log(Level.INFO,"creating mesh with pieces:$nPieces", new Exception())
             Pieces pieces = new Pieces(nPieces, Constants.DOWNLOAD_SEQUENTIAL_RATIO)
             if (fileManager.rootToFiles.containsKey(infoHash)) {
                 for (int i = 0; i < nPieces; i++)
