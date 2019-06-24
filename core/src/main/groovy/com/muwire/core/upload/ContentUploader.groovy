@@ -44,7 +44,7 @@ class ContentUploader extends Uploader {
             int endPiece = range.end / (0x1 << pieceSize)
             for (int i = startPiece; i <= endPiece; i++)
                 satisfiable &= mesh.pieces.isDownloaded(i)
-            log.info("requested range $range.start-$range.end startPiece:$startPiece endPiece:$endpiece satisfiable:$satisfiable my pieces: ${mesh.pieces.downloaded()}")
+            log.info("requested range $range.start-$range.end startPiece:$startPiece endPiece:$endPiece satisfiable:$satisfiable my pieces: ${mesh.pieces.downloaded()}")
         }
         if (!satisfiable) {
             log.info("416 range not satisfiable")
