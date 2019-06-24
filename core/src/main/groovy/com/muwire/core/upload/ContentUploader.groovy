@@ -12,8 +12,10 @@ import com.muwire.core.connection.Endpoint
 import com.muwire.core.mesh.Mesh
 import com.muwire.core.util.DataUtil
 
+import groovy.util.logging.Log
 import net.i2p.data.Destination
 
+@Log
 class ContentUploader extends Uploader {
     
     private final File file
@@ -42,8 +44,10 @@ class ContentUploader extends Uploader {
             int endPiece = range.end / (0x1 << pieceSize)
             for (int i = startPiece; i <= endPiece; i++)
                 satisfiable &= mesh.pieces.isDownloaded(i)
+            log.info("requested range $range.start-$range.end startPiece:$startPiece endPiece:$endpiece satisfiable:$satisfiable my pieces: ${mesh.pieces.downloaded()}")
         }
         if (!satisfiable) {
+            log.info("416 range not satisfiable")
             os.write("416 Range Not Satisfiable\r\n".getBytes(StandardCharsets.US_ASCII))
             writeMesh(request.downloader)
             os.write("\r\n".getBytes(StandardCharsets.US_ASCII))
@@ -51,6 +55,8 @@ class ContentUploader extends Uploader {
             return
         }
 
+        log.info("200 ok")
+        
         os.write("200 OK\r\n".getBytes(StandardCharsets.US_ASCII))
         os.write("Content-Range: $range.start-$range.end\r\n".getBytes(StandardCharsets.US_ASCII))
         writeMesh(request.downloader)
